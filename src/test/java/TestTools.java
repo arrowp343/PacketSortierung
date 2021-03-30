@@ -22,4 +22,17 @@ public class TestTools {
         assertEquals('E', charPool12[4]);
         assertEquals('F', charPool12[5]);
     }
+    @Test
+    public void testAppendCharPool(){
+        char[] charPool = Tools.generateCharPool('A', 'C');
+        charPool = Tools.appendCharPool(charPool, 'D');
+        charPool = Tools.appendCharPool(charPool, 'E');
+        charPool = Tools.appendCharPool(charPool, 'F');
+        assertEquals('A', charPool[0]);
+        assertEquals('B', charPool[1]);
+        assertEquals('C', charPool[2]);
+        assertEquals('D', charPool[3]);
+        assertEquals('E', charPool[4]);
+        assertEquals('F', charPool[5]);
+    }
 }

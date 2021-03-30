@@ -20,4 +20,10 @@ public class Tools {
             pool12[i+j] = pool2[j];
         return pool12;
     }
+    public static char[] appendCharPool(char[] pool, char append){
+        char[] newPool = new char[pool.length+1];
+        System.arraycopy(pool, 0, newPool, 0, pool.length);
+        newPool[pool.length] = append;
+        return newPool;
+    }
 }
