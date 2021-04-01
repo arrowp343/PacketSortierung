@@ -5,7 +5,7 @@ public class Package {
     private final PackageType type;
     private final double weight;
 
-    private final char[] idCharPool, contentCharPool;
+    private char[] idCharPool, contentCharPool;
 
     public Package(){
         idCharPool = Tools.connectCharPool(Tools.generateCharPool('a', 'z'), Tools.generateCharPool('0', '9'));
@@ -17,9 +17,19 @@ public class Package {
         weight = 1 + Math.random() * 4;
     }
 
-    /*public Package(String csv){
-        TODO einlesen aus csv
-    }*/
+    public Package(String csv){
+        String[] split = csv.split(",");
+        id = split[0];
+        content = new char[Configuration.l][Configuration.w][Configuration.h];
+        int count = 0;
+        for(int i = 0; i < Configuration.l; i++)
+            for(int j = 0; j < Configuration.w; j++)
+                for(int k = 0; k < Configuration.h; k++)
+                    content[i][j][k] = split[1].charAt(count++);
+        zip_code = split[2];
+        type = PackageType.valueOf(split[3]);
+        weight = Double.parseDouble(split[4]);
+    }
 
     private String generateId(){
         char[] charId = new char[6];
@@ -29,17 +39,16 @@ public class Package {
         return new String(charId);
     }
     private char[][][] generateContent(){
-        int l = 25, w = 10, h = 10;
-        char[][][] content = new char[l][w][h];
-        for(int i = 0; i < l; i++)
-            for(int j = 0; j < w; j++)
-                for(int k = 0; k < h; k++)
+        char[][][] content = new char[Configuration.l][Configuration.w][Configuration.h];
+        for(int i = 0; i < Configuration.l; i++)
+            for(int j = 0; j < Configuration.w; j++)
+                for(int k = 0; k < Configuration.h; k++)
                     content[i][j][k] = contentCharPool[(int) (Math.random() * contentCharPool.length)];
         return content;
     }
     private String generateZipCode(){
         int zipStart = 1067, zipEnd = 99998, zipInt = zipStart + (int) (Math.random() * (zipEnd-zipStart));
-        return zipInt < 100000 ? "0" + zipInt : Integer.toString(zipInt);
+        return zipInt < 10000 ? "0" + zipInt : Integer.toString(zipInt);
     }
     private PackageType generateType(){
         double r = Math.random(), percentageNormal = 0.80, percentageExpress = 0.15;
