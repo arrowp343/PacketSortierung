@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 
 public class CSV {
     public static void writePackageInCSV(Package[] packages) throws IOException {
@@ -18,22 +19,10 @@ public class CSV {
         writeInCSV("base_package.csv", stringBuilder.toString());
     }
     public static Package[] readPackageFromCSV(){
-        Package[] packages = null;
-        int countLines = -1;        //skip first line
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("csv/base_package.csv"));
-            while(reader.readLine() != null) countLines++;
-            reader.close();
-            reader = new BufferedReader(new FileReader("csv/base_package.csv"));      //reset reader
-            packages = new Package[countLines];
-            reader.readLine();      //skip first line
-            String line;
-            for(int i = 0; (line = reader.readLine()) != null; i++)
-                packages[i] = new Package(line);
-            reader.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        ArrayList<String> csv = readFromCSV("csv/base_package.csv");
+        Package[] packages = new Package[csv.size()];
+        for(int i = 0; i < packages.length; i++)
+            packages[i] = new Package(csv.get(i));
         return packages;
     }
     private static void writeInCSV(String fileName, String line) throws IOException {
@@ -47,5 +36,19 @@ public class CSV {
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(line);
         bw.close();
+    }
+    private static ArrayList<String> readFromCSV(String fileName){
+        ArrayList<String> lines = new ArrayList<>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            reader.readLine();      //skip first line
+            String line;
+            while((line = reader.readLine()) != null)
+                lines.add(line);
+            reader.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return lines;
     }
 }
