@@ -15,20 +15,24 @@ public class TestCSV {
             System.out.println(e.getMessage());
         }
 
-        //read packages
-        Package[] actual= CSV.readPackageFromCSV();
+        try {
+            //read packages
+            Package[] actual = CSV.readPackageFromCSV();
 
-        //compare package arrays
-        for(int i = 0; i < actual.length; i++){
-            assertEquals(packages[i].getId(), actual[i].getId());
-            char[][][] e = packages[i].getContent(), a = actual[i].getContent();
-            for(int i1 = 0; i1 < Configuration.l; i1++)
-                for(int i2 = 0; i2 < Configuration.w; i2++)
-                    for(int i3 = 0; i3 < Configuration.h; i3++)
-                        assertEquals(e[i1][i2][i3], a[i1][i2][i3]);
-            assertEquals(packages[i].getZip_code(), actual[i].getZip_code());
-            assertEquals(packages[i].getType(), actual[i].getType());
-            assertEquals(packages[i].getWeight(), actual[i].getWeight());
+            //compare package arrays
+            for (int i = 0; i < actual.length; i++) {
+                assertEquals(packages[i].getId(), actual[i].getId());
+                char[][][] e = packages[i].getContent(), a = actual[i].getContent();
+                for (int i1 = 0; i1 < Configuration.l; i1++)
+                    for (int i2 = 0; i2 < Configuration.w; i2++)
+                        for (int i3 = 0; i3 < Configuration.h; i3++)
+                            assertEquals(e[i1][i2][i3], a[i1][i2][i3]);
+                assertEquals(packages[i].getZip_code(), actual[i].getZip_code());
+                assertEquals(packages[i].getType(), actual[i].getType());
+                assertEquals(packages[i].getWeight(), actual[i].getWeight());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }
