@@ -25,6 +25,36 @@ public class CSV {
             packages[i] = new Package(csv.get(i));
         return packages;
     }
+    public static void writeBoxInCSV(Box[] boxes) throws IOException{
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("box_id,");
+        for(int i = 0; i < Configuration.maxPackagesInBox; i++){
+            stringBuilder.append("p_id").append(i);
+            if(i != Configuration.maxPackagesInBox - 1)
+                stringBuilder.append(",");
+            else
+                stringBuilder.append("\n");
+        }
+        for(Box b: boxes){
+            stringBuilder.append(b.getId()).append(",");
+            Package[] p = b.getPackages();
+            for(int i = 0; i < p.length; i++) {
+                stringBuilder.append(p[i].getId());
+                if (i != Configuration.maxPackagesInBox - 1)
+                    stringBuilder.append(",");
+                else
+                    stringBuilder.append("\n");
+            }
+        }
+        writeInCSV("base_box.csv", stringBuilder.toString());
+    }
+    public static Box[] readBoxFromCSV() throws IOException{
+        ArrayList<String> csv = readFromCSV("csv/base_box.csv");
+        Box[] boxes = new Box[csv.size()];
+        for(int i = 0; i < boxes.length; i++)
+            boxes[i] = new Box(csv.get(i));
+        return boxes;
+    }
     private static void writeInCSV(String fileName, String line) throws IOException {
         String directoryName = "csv";
         File directory = new File(directoryName);
