@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
@@ -5,43 +6,38 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCSV {
 
-    final int amountPackages = 1000,
+    final int amountPackages = 24000,
               amountBoxes = amountPackages / Configuration.maxPackagesInBox,
               amountPallet = amountBoxes / Configuration.maxBoxesOnPallet;
 
+    @BeforeAll
+    static void resetCSV(){
+        CSV.reset();
+    }
+
     @Test
     @Order(1)
-    public void testPackageCSV(){
+    public void testPackageCSV() {
         //write packages
-        Package[] expect = new Package[amountPackages];
-        for(int i = 0; i < expect.length; i++)
-            expect[i] = new Package();
-        try{
-            CSV.writePackageInCSV(expect);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-        try {
-            //read packages
-            Package[] actual = CSV.readPackageFromCSV();
-
-            //compare package arrays
-            for (int i = 0; i < actual.length; i++) {
-                assertEquals(expect[i].getId(), actual[i].getId());
-                char[][][] e = expect[i].getContent(), a = actual[i].getContent();
-                for (int i1 = 0; i1 < Configuration.l; i1++)
-                    for (int i2 = 0; i2 < Configuration.w; i2++)
-                        for (int i3 = 0; i3 < Configuration.h; i3++)
-                            assertEquals(e[i1][i2][i3], a[i1][i2][i3]);
-                assertEquals(expect[i].getZip_code(), actual[i].getZip_code());
-                assertEquals(expect[i].getType(), actual[i].getType());
-                assertEquals(expect[i].getWeight(), actual[i].getWeight());
+        int count = amountPackages;
+        do {
+            Package[] packages;
+            if (count >= 1000) {
+                count -= 1000;
+                packages = new Package[1000];
+            } else {
+                packages = new Package[count];
             }
-        } catch (Exception e) {
-            fail("Test failed because of Exception: " + e.getMessage());
-        }
+            for (int j = 0; j < packages.length; j++)
+                packages[j] = new Package();
+            try {
+                CSV.writePackageInCSV(packages);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } while (count > 0);
     }
+
     @Test
     @Order(2)
     public void testBoxCSV(){

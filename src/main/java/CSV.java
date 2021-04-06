@@ -46,11 +46,11 @@ public class CSV {
     public static void writePalletInCSV(Pallet[] pallets) throws IOException{
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("pallet_id,position,level,box_id\n");
-        for(int i = 0; i < pallets.length; i++){            //for each pallet
-            Box[][] boxes = pallets[i].getBoxes();
-            for(int j = 0; j < boxes.length; j++){          //for each position
-                for(int k = 0; k < boxes[j].length; k++){   //for each level
-                    String pallet_id = pallets[i].getId(),
+        for (Pallet pallet : pallets) {            //for each pallet
+            Box[][] boxes = pallet.getBoxes();
+            for (int j = 0; j < boxes.length; j++) {          //for each position
+                for (int k = 0; k < boxes[j].length; k++) {   //for each level
+                    String pallet_id = pallet.getId(),
                             position = String.valueOf(j),
                             level = String.valueOf(k),
                             box_id = boxes[j][k].getId();
@@ -86,7 +86,7 @@ public class CSV {
             directory.mkdir();
         String filePath = directoryName + System.getProperty("file.separator") + fileName;
         File file = new File(filePath);
-        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(line);
         bw.close();
@@ -118,5 +118,17 @@ public class CSV {
                 if (line.split(",")[0].equals(id))
                     return line;
         throw new Exception("readFromCSVbyId: id " + id + " not found in CSV");
+    }
+
+    public static void reset(){
+        System.out.println("-- CSV Reset --");
+        File folder = new File("csv");
+        File[] files = folder.listFiles();
+        if(files!=null) { //some JVMs return null for empty dirs
+            for(File f: files) {
+                f.delete();
+            }
+        }
+        folder.delete();
     }
 }
