@@ -2,6 +2,8 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class CSV {
+    private static ArrayList<String> packageList, boxList, palletList, trailerList;
+
     public static void writePackageInCSV(Package[] packages) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,content,zip_code,type,weigth\n");
@@ -19,10 +21,10 @@ public class CSV {
         writeInCSV("base_package.csv", stringBuilder.toString());
     }
     public static Package[] readPackageFromCSV(){
-        ArrayList<String> csv = readFromCSV("csv/base_package.csv");
-        Package[] packages = new Package[csv.size()];
+        packageList = readFromCSV("csv/base_package.csv");
+        Package[] packages = new Package[packageList.size()];
         for(int i = 0; i < packages.length; i++)
-            packages[i] = new Package(csv.get(i));
+            packages[i] = new Package(packageList.get(i));
         return packages;
     }
     private static void writeInCSV(String fileName, String line) throws IOException {
@@ -50,5 +52,18 @@ public class CSV {
             System.out.println(e.getMessage());
         }
         return lines;
+    }
+    public static String readFromCSVById(String obj, String id) throws Exception{        // TODO evtl andere lösung als string zu übergeben
+        ArrayList<String> lines = switch (obj) {
+            case "package" -> packageList;
+            case "box" -> boxList;
+            case "pallet" -> palletList;
+            default -> throw new Exception("readFromCSVbyId: Object " + obj + " not valid;");
+        };
+        if(lines != null)
+            for (String line : lines)
+                if (line.split(",")[0].equals(id))
+                    return line;
+        throw new Exception("readFromCSVbyId: id " + id + " not found in CSV");
     }
 }
