@@ -20,13 +20,6 @@ public class CSV {
         }
         writeInCSV("base_package.csv", stringBuilder.toString());
     }
-    public static Package[] readPackageFromCSV(){
-        packageList = readFromCSV("csv/base_package.csv");
-        Package[] packages = new Package[packageList.size()];
-        for(int i = 0; i < packages.length; i++)
-            packages[i] = new Package(packageList.get(i));
-        return packages;
-    }
     public static void writeBoxInCSV(Box[] boxes) throws IOException{
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("box_id,");
@@ -50,6 +43,34 @@ public class CSV {
         }
         writeInCSV("base_box.csv", stringBuilder.toString());
     }
+    public static void writePalletInCSV(Pallet[] pallets) throws IOException{
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("pallet_id,position,level,box_id\n");
+        for(int i = 0; i < pallets.length; i++){            //for each pallet
+            Box[][] boxes = pallets[i].getBoxes();
+            for(int j = 0; j < boxes.length; j++){          //for each position
+                for(int k = 0; k < boxes[j].length; k++){   //for each level
+                    String pallet_id = pallets[i].getId(),
+                            position = String.valueOf(j),
+                            level = String.valueOf(k),
+                            box_id = boxes[j][k].getId();
+                    stringBuilder.append(pallet_id).append(",");
+                    stringBuilder.append(position).append(",");
+                    stringBuilder.append(level).append(",");
+                    stringBuilder.append(box_id).append("\n");
+                }
+            }
+        }
+        writeInCSV("base_pallet.csv", stringBuilder.toString());
+    }
+
+    public static Package[] readPackageFromCSV(){
+        packageList = readFromCSV("csv/base_package.csv");
+        Package[] packages = new Package[packageList.size()];
+        for(int i = 0; i < packages.length; i++)
+            packages[i] = new Package(packageList.get(i));
+        return packages;
+    }
     public static Box[] readBoxFromCSV() throws IOException{
         ArrayList<String> csv = readFromCSV("csv/base_box.csv");
         Box[] boxes = new Box[csv.size()];
@@ -57,6 +78,7 @@ public class CSV {
             boxes[i] = new Box(csv.get(i));
         return boxes;
     }
+
     private static void writeInCSV(String fileName, String line) throws IOException {
         String directoryName = "csv";
         File directory = new File(directoryName);
@@ -69,6 +91,7 @@ public class CSV {
         bw.write(line);
         bw.close();
     }
+
     private static ArrayList<String> readFromCSV(String fileName){
         ArrayList<String> lines = new ArrayList<>();
         try {

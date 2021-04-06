@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestCSV {
 
     final int amountPackages = 1000,
-              amountBoxes = amountPackages / Configuration.maxPackagesInBox;
+              amountBoxes = amountPackages / Configuration.maxPackagesInBox,
+              amountPallet = amountBoxes / Configuration.maxBoxesOnPallet;
 
     @Test
     @Order(1)
@@ -38,7 +39,7 @@ public class TestCSV {
                 assertEquals(expect[i].getWeight(), actual[i].getWeight());
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            fail("Test failed because of Exception: " + e.getMessage());
         }
     }
     @Test
@@ -75,7 +76,29 @@ public class TestCSV {
                 }
             }
         } catch (Exception e){
-            System.out.println(e.getMessage());
+            fail("Test failed because of Exception: " + e.getMessage());
+        }
+    }
+    @Test
+    @Order(3)
+    public void testPalletCSV(){
+        try{
+            Box[] boxes = CSV.readBoxFromCSV();
+            int bCount = 0;
+            Pallet[] expect = new Pallet[amountPallet];
+            for(int i = 0; i < expect.length; i++) {
+                Box[][] b = new Box[Configuration.amountPositionsOnPallet][Configuration.amountLevelsOnPallet];
+                for(int j = 0; j < b.length; j++) {
+                    for(int k = 0; k < b[j].length; k++){
+                        b[j][k] = boxes[bCount];
+                        bCount++;
+                    }
+                }
+                expect[i] = new Pallet(b);
+            }
+            CSV.writePalletInCSV(expect);
+        } catch (Exception e){
+            fail("Test failed because of Exception: " + e.getMessage());
         }
     }
 }

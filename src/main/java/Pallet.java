@@ -1,21 +1,24 @@
 public class Pallet {
     static int lastId;
     private final String id;
-    private Box[][][] boxes;
+    private Box[][] boxes;      //[position][level]
 
-    public Pallet(Box[][][] boxes){
+    public Pallet(Box[][] boxes){
         id = String.valueOf(++lastId);
         this.boxes = boxes;
     }
 
-    /*public Pallet(String csv){
-        TODO einlesen aus csv
-    }*/
+    public Pallet(String id){
+        this.id = id;
+    }
 
     public String getId(){
         return id;
     }
-    public Box[][][] getBoxes(){
+    public Box[][] getBoxes(){
         return boxes;
+    }
+    public void addBox(Box box){
+
     }
 }
