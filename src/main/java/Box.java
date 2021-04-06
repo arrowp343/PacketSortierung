@@ -2,19 +2,27 @@ public class Box {
     private final String id;
     private final Package[] packages;
 
-    private final char[] idCharPool;
-
     public Box(Package[] packages){
-        idCharPool = Tools.connectCharPool(Tools.generateCharPool('a', 'z'), Tools.generateCharPool('0', '9'));
         id = generateId();
         this.packages = packages;
     }
 
-    /*public Box(String csv){
-        TODO einlesen aus csv
-    }*/
+    public Box(String csv){
+        String[] split = csv.split(",");
+        id = split[0];
+        packages = new Package[40];     // TODO globale variable für anzahl pakete pro box
+        CSV.readPackageFromCSV();
+        for(int i = 1; i < split.length; i++){
+            try {
+                packages[i - 1] = new Package(CSV.readFromCSVById("package", split[i]));
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     private String generateId(){
+        char[] idCharPool = Tools.connectCharPool(Tools.generateCharPool('a', 'z'), Tools.generateCharPool('0', '9'));
         char[] charId = new char[6];
         for(int i = 0; i < charId.length; i++)
             charId[i] = idCharPool[(int) (Math.random() * idCharPool.length)];
