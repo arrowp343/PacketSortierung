@@ -1,12 +1,18 @@
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCSV {
+
+    final int amountPackages = 1000,
+              amountBoxes = amountPackages / Configuration.maxPackagesInBox;
+
     @Test
+    @Order(1)
     public void testPackageCSV(){
         //write packages
-        Package[] packages = new Package[1000];
+        Package[] packages = new Package[amountPackages];
         for(int i = 0; i < packages.length; i++)
             packages[i] = new Package();
         try{
@@ -32,6 +38,27 @@ public class TestCSV {
                 assertEquals(packages[i].getWeight(), actual[i].getWeight());
             }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    @Test
+    @Order(2)
+    public void testBoxCSV(){
+        try{
+            Package[] packages = CSV.readPackageFromCSV();
+            int pCount = 0;
+            Box[] boxes = new Box[amountBoxes];
+            for(int i = 0; i < boxes.length; i++) {
+                Package[] p = new Package[Configuration.maxPackagesInBox];
+                for(int k = 0; k < p.length; k++) {
+                    p[k] = packages[pCount];
+                    pCount++;
+                }
+                boxes[i] = new Box(p);
+            }
+            CSV.writeBoxInCSV(boxes);
+            //TODO readBoxFromCSV
+        } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
