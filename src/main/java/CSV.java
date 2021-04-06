@@ -18,7 +18,7 @@ public class CSV {
         }
         writeInCSV("base_package.csv", stringBuilder.toString());
     }
-    public static Package[] readPackageFromCSV() throws IOException {
+    public static Package[] readPackageFromCSV(){
         ArrayList<String> csv = readFromCSV("csv/base_package.csv");
         Package[] packages = new Package[csv.size()];
         for(int i = 0; i < packages.length; i++)
@@ -37,14 +37,18 @@ public class CSV {
         bw.write(line);
         bw.close();
     }
-    private static ArrayList<String> readFromCSV(String fileName) throws IOException {
+    private static ArrayList<String> readFromCSV(String fileName){
         ArrayList<String> lines = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(fileName));
-        reader.readLine();      //skip first line
-        String line;
-        while((line = reader.readLine()) != null)
-            lines.add(line);
-        reader.close();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            reader.readLine();      //skip first line
+            String line;
+            while((line = reader.readLine()) != null)
+                lines.add(line);
+            reader.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return lines;
     }
 }
