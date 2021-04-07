@@ -181,25 +181,22 @@ public class CSV {
             else
                 stringBuilder.append("\n");
         }
-        writeInCSV("base_box.csv", stringBuilder.toString());   // header
-
         int count = 0;
         ArrayList<String> lines;
         do {
-            stringBuilder = new StringBuilder();
-
             int from = Configuration.maxPackagesInBox * count;
             int to = from + Configuration.maxPackagesInBox - 1;
-            lines = readFromCSV("csv/base_package.csv", from, to);
+            lines = readFromCSV("csv/base_package.csv", from, to);      //TODO evtl alle 24.000 zeichen lesen?
             if(lines.size() == 0) break;
+            stringBuilder.append(Box.generateId()).append(",");
             for (String line : lines) {
                 stringBuilder.append(line.split(",")[0]).append(",");   //append package_id
             }
             stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length()); //delete last ","
             stringBuilder.append("\n");
-            writeInCSV("base_box.csv", Box.generateId() + "," + stringBuilder.toString());
             count++;
         } while(lines.size() != 0);
+        writeInCSV("base_box.csv", stringBuilder.toString());   // header
         System.out.println("\t\t[Done]");
     }
     public static void initPallets() throws IOException{
