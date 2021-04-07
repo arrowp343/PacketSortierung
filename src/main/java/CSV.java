@@ -186,7 +186,7 @@ public class CSV {
         do {
             int from = Configuration.maxPackagesInBox * count;
             int to = from + Configuration.maxPackagesInBox - 1;
-            lines = readFromCSV("csv/base_package.csv", from, to);      //TODO evtl alle 24.000 zeichen lesen?
+            lines = readFromCSV("csv/base_package.csv", from, to);      //TODO evtl alle 24.000 zeilen lesen?
             if(lines.size() == 0) break;
             stringBuilder.append(Box.generateId()).append(",");
             for (String line : lines) {
@@ -222,13 +222,31 @@ public class CSV {
         writeInCSV("base_pallet.csv", pallets.toString());
         System.out.println("\t\t[Done]");
     }
-    public static void initTrucks(){
+    public static void initTrucks() throws IOException{
         System.out.print("Initializing Trucks...");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("truck_id,side,position,pallet_id\n");
 
-        System.out.println("\t\t[Not implemented yet]");
-
-
-        //        System.out.println("\t\t[Done]");
+        BufferedReader reader = new BufferedReader(new FileReader("csv/base_pallet.csv"));
+        reader.readLine();      //skip first line
+        String line, truck_id = Truck.generateId(), pallet_id = "";
+        int pos = 0;
+        while ((line = reader.readLine()) != null){
+            if(pallet_id.equals(line.split(",")[0])) continue;
+            else pallet_id = line.split(",")[0];
+            stringBuilder.append(truck_id).append(",")
+                         .append(pos%2==0 ? "left" : "right").append(",")
+                         .append(pos / 2).append(",")
+                         .append(pallet_id).append("\n");
+            if(++pos >= Configuration.maxPalletsInTruck){
+                pos = 0;
+                truck_id = Truck.generateId();
+            }
+        }
+        reader.close();
+        writeInCSV("base_truck.csv", stringBuilder.toString());
+        //System.out.println("\t\t[Not implemented yet]");
+        System.out.println("\t\t[Done]");
     }
 
     public static void main(String[] args) {

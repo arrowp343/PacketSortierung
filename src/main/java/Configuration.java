@@ -5,4 +5,5 @@ public class Configuration {
     public static final int amountPositionsOnPallet = 2*2;
     public static final int amountLevelsOnPallet = 3;
     public static final int maxBoxesOnPallet = amountPositionsOnPallet * amountLevelsOnPallet;
+    public static final int maxPalletsInTruck = 10;
 }
