@@ -106,6 +106,23 @@ public class CSV {
         }
         return lines;
     }
+    public static ArrayList<String> readNth1000FromCSV(String fileName, int n){
+        ArrayList<String> lines = new ArrayList<>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            reader.readLine();      //skip first line
+            for(int i = 0; i < 1000 * (n+1); i++)
+                reader.readLine();      //skip first 1000 * (n+1) lines
+            String line;
+            for(int i = 0; i < 1000; i++)
+                if((line = reader.readLine()) != null)
+                    lines.add(line);
+            reader.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return lines;
+    }
     public static String readFromCSVById(String obj, String id) throws Exception{        // TODO evtl andere lösung als string zu übergeben
         ArrayList<String> lines = switch (obj) {
             case "package" -> packageList;
