@@ -7,11 +7,11 @@ public class Box {
         this.packages = packages;
     }
 
-    public Box(String csv){
+   /* public Box(String csv){
         String[] split = csv.split(",");
         id = split[0];
-        packages = new Package[40];     // TODO globale variable für anzahl pakete pro box
-        CSV.readPackageFromCSV();
+        packages = new Package[Configuration.maxPackagesInBox];
+        //CSV.readPackageFromCSV();
         for(int i = 1; i < split.length; i++){
             try {
                 packages[i - 1] = new Package(CSV.readFromCSVById("package", split[i]));
@@ -19,9 +19,9 @@ public class Box {
                 System.out.println(e.getMessage());
             }
         }
-    }
+    }*/
 
-    private String generateId(){
+    public static String generateId(){
         char[] idCharPool = Tools.connectCharPool(Tools.generateCharPool('a', 'z'), Tools.generateCharPool('0', '9'));
         char[] charId = new char[6];
         for(int i = 0; i < charId.length; i++)

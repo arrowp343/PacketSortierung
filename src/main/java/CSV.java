@@ -2,25 +2,24 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class CSV {
+
+    private static final int amountPackages = 24000;
     private static ArrayList<String> packageList, boxList, palletList, trailerList;
 
-    public static void writePackageInCSV(Package[] packages) throws IOException {
+    public static void writePackageCSV(Package p) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("id,content,zip_code,type,weigth\n");
-        for(Package p: packages){
-            stringBuilder.append(p.getId()).append(",");
-            char[][][] content = p.getContent();
-            for(int i = 0; i < Configuration.l; i++)
-                for(int j = 0; j < Configuration.w; j++)
-                    for(int k = 0; k < Configuration.h; k++)
-                        stringBuilder.append(content[i][j][k]);
-            stringBuilder.append(",").append(p.getZip_code()).append(",")
-                    .append(p.getType()).append(",")
-                    .append(p.getWeight()).append("\n");
-        }
+        stringBuilder.append(p.getId()).append(",");
+        char[][][] content = p.getContent();
+        for (int i = 0; i < Configuration.l; i++)
+            for (int j = 0; j < Configuration.w; j++)
+                for (int k = 0; k < Configuration.h; k++)
+                    stringBuilder.append(content[i][j][k]);
+        stringBuilder.append(",").append(p.getZip_code()).append(",")
+                .append(p.getType()).append(",")
+                .append(p.getWeight()).append("\n");
         writeInCSV("base_package.csv", stringBuilder.toString());
     }
-    public static void writeBoxInCSV(Box[] boxes) throws IOException{
+    public static void writeBoxCSV(Box[] boxes) throws IOException{
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("box_id,");
         for(int i = 0; i < Configuration.maxPackagesInBox; i++){
@@ -43,7 +42,7 @@ public class CSV {
         }
         writeInCSV("base_box.csv", stringBuilder.toString());
     }
-    public static void writePalletInCSV(Pallet[] pallets) throws IOException{
+    public static void writePalletCSV(Pallet[] pallets) throws IOException{
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("pallet_id,position,level,box_id\n");
         for (Pallet pallet : pallets) {            //for each pallet
@@ -63,22 +62,6 @@ public class CSV {
         }
         writeInCSV("base_pallet.csv", stringBuilder.toString());
     }
-
-    public static Package[] readPackageFromCSV(){
-        packageList = readFromCSV("csv/base_package.csv");
-        Package[] packages = new Package[packageList.size()];
-        for(int i = 0; i < packages.length; i++)
-            packages[i] = new Package(packageList.get(i));
-        return packages;
-    }
-    public static Box[] readBoxFromCSV() throws IOException{
-        ArrayList<String> csv = readFromCSV("csv/base_box.csv");
-        Box[] boxes = new Box[csv.size()];
-        for(int i = 0; i < boxes.length; i++)
-            boxes[i] = new Box(csv.get(i));
-        return boxes;
-    }
-
     private static void writeInCSV(String fileName, String line) throws IOException {
         String directoryName = "csv";
         File directory = new File(directoryName);
@@ -92,18 +75,44 @@ public class CSV {
         bw.close();
     }
 
-    private static ArrayList<String> readFromCSV(String fileName){
+    /*public static Package[] readPackageFromCSV(){
+        packageList = readFromCSV("csv/base_package.csv");
+        Package[] packages = new Package[packageList.size()];
+        for(int i = 0; i < packages.length; i++)
+            packages[i] = new Package(packageList.get(i));
+        return packages;
+    }
+    public static Box[] readBoxFromCSV() throws IOException{
+        ArrayList<String> csv = readFromCSV("csv/base_box.csv");
+        Box[] boxes = new Box[csv.size()];
+        for(int i = 0; i < boxes.length; i++)
+            boxes[i] = new Box(csv.get(i));
+        return boxes;
+    }
+*/  // evtl überflüssig, weil nicht 24k Pakete gleichzeitig geladen werden können
+
+    private static ArrayList<String> readFromCSV(String fileName) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            reader.readLine();      //skip first line
-            String line;
-            while((line = reader.readLine()) != null)
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        reader.readLine();      //skip first line
+        String line;
+        while ((line = reader.readLine()) != null)
+            lines.add(line);
+        reader.close();
+
+        return lines;
+    }
+    public static ArrayList<String> readFromCSV(String fileName, int from, int to) throws IOException{
+        ArrayList<String> lines = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        reader.readLine();      //skip first line
+        for(int i = 0; i < from; i++)
+            reader.readLine(); //skip lines from 0 to start
+        String line;
+        for(int i = 0; i <= to-from; i++)
+            if((line = reader.readLine()) != null)
                 lines.add(line);
-            reader.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        reader.close();
         return lines;
     }
     public static ArrayList<String> readNth1000FromCSV(String fileName, int n){
@@ -147,5 +156,93 @@ public class CSV {
             }
         }
         folder.delete();
+    }
+
+    public static void initPackages() throws IOException{
+        System.out.print("Initializing Packages...");
+        writeInCSV("base_package.csv", "id,content,zip_code,type,weigth\n");
+        int count = amountPackages;
+        while (count > 0) {
+            Package p;
+            p = new Package();
+            CSV.writePackageCSV(p);
+            count--;
+        }
+        System.out.println("\t[Done]");
+    }
+    public static void initBoxes() throws IOException{
+        System.out.print("Initializing Boxes...");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("box_id,");
+        for(int i = 0; i < Configuration.maxPackagesInBox; i++){
+            stringBuilder.append("p_id").append(i);
+            if(i != Configuration.maxPackagesInBox - 1)
+                stringBuilder.append(",");
+            else
+                stringBuilder.append("\n");
+        }
+        writeInCSV("base_box.csv", stringBuilder.toString());   // header
+
+        int count = 0;
+        ArrayList<String> lines;
+        do {
+            stringBuilder = new StringBuilder();
+
+            int from = Configuration.maxPackagesInBox * count;
+            int to = from + Configuration.maxPackagesInBox - 1;
+            lines = readFromCSV("csv/base_package.csv", from, to);
+            if(lines.size() == 0) break;
+            for (String line : lines) {
+                stringBuilder.append(line.split(",")[0]).append(",");   //append package_id
+            }
+            stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length()); //delete last ","
+            stringBuilder.append("\n");
+            writeInCSV("base_box.csv", Box.generateId() + "," + stringBuilder.toString());
+            count++;
+        } while(lines.size() != 0);
+        System.out.println("\t\t[Done]");
+    }
+    public static void initPallets() throws IOException{
+        System.out.print("Initializing Pallets...");
+        writeInCSV("base_pallet.csv", "pallet_id,position,level,box_id\n");
+        ArrayList<String> boxes = readFromCSV("csv/base_box.csv");
+        StringBuilder pallets = new StringBuilder();
+        int id = 1, pos = 0, level = 0;
+        for (String box : boxes) {
+            String pallet = id + "," +
+                    pos + "," +
+                    level + "," +
+                    box.split(",")[0] + "\n";
+            pallets.append(pallet);
+            if (++pos >= Configuration.amountPositionsOnPallet) {
+                pos = 0;
+                if (++level >= Configuration.amountLevelsOnPallet) {
+                    level = 0;
+                    id = ++Pallet.lastId;
+                }
+            }
+        }
+        writeInCSV("base_pallet.csv", pallets.toString());
+        System.out.println("\t\t[Done]");
+    }
+    public static void initTrucks(){
+        System.out.print("Initializing Trucks...");
+
+        System.out.println("\t\t[Not implemented yet]");
+
+
+        //        System.out.println("\t\t[Done]");
+    }
+
+    public static void main(String[] args) {
+        try {
+            reset();
+            initPackages();
+            initBoxes();
+            initPallets();
+            initTrucks();
+        } catch (Exception e){
+            System.out.println("\t[Error] at CSV.main: \n" + e.getMessage());
+        }
     }
 }

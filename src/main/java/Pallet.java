@@ -1,5 +1,5 @@
 public class Pallet {
-    static int lastId;
+    public static int lastId = 1;
     private final String id;
     private Box[][] boxes;      //[position][level]
 
@@ -10,6 +10,7 @@ public class Pallet {
 
     public Pallet(String id){
         this.id = id;
+        boxes = new Box[Configuration.amountPositionsOnPallet][Configuration.amountLevelsOnPallet];
     }
 
     public String getId(){
@@ -18,7 +19,7 @@ public class Pallet {
     public Box[][] getBoxes(){
         return boxes;
     }
-    public void addBox(Box box){
-
+    public void addBox(Box box, int position, int level) throws ArrayIndexOutOfBoundsException{
+        boxes[position][level] = box;
     }
 }
