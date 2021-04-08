@@ -1,3 +1,5 @@
+package csv;
+
 public class Truck {
     private final String id;
     private Trailer trailer;
@@ -7,7 +9,7 @@ public class Truck {
         this.trailer = trailer;
     }
 
-    /*public Package(String csv){
+    /*public csv.Package(String csv){
         TODO einlesen aus csv
     }*/
 

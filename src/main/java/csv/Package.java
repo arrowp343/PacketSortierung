@@ -1,3 +1,5 @@
+package csv;
+
 public class Package {
     private final String id;
     private final char[][][] content;

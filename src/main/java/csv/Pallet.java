@@ -1,3 +1,5 @@
+package csv;
+
 public class Pallet {
     public static int lastId = 1;
     private final String id;

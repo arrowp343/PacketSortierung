@@ -1,3 +1,5 @@
+package csv;
+
 public class Trailer {
     private Pallet[] palletsLeft, palletsRight;
     private Truck truck;

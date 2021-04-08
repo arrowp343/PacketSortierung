@@ -1,3 +1,5 @@
+package csv;
+
 public class Box {
     private final String id;
     private final Package[] packages;
