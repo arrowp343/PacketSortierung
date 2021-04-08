@@ -160,14 +160,23 @@ public class CSV {
 
     public static void initPackages() throws IOException{
         System.out.print("Initializing Packages...");
-        writeInCSV("base_package.csv", "id,content,zip_code,type,weigth\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("id,content,zip_code,type,weigth\n");
         int count = amountPackages;
         while (count > 0) {
-            Package p;
-            p = new Package();
-            CSV.writePackageCSV(p);
+            Package p = new Package();
+            stringBuilder.append(p.getId()).append(",");
+            char[][][] content = p.getContent();
+            for (int i = 0; i < Configuration.l; i++)
+                for (int j = 0; j < Configuration.w; j++)
+                    for (int k = 0; k < Configuration.h; k++)
+                        stringBuilder.append(content[i][j][k]);
+            stringBuilder.append(",").append(p.getZip_code()).append(",")
+                    .append(p.getType()).append(",")
+                    .append(p.getWeight()).append("\n");
             count--;
         }
+        writeInCSV("base_package.csv", stringBuilder.toString());
         System.out.println("\t[Done]");
     }
     public static void initBoxes() throws IOException{
@@ -181,36 +190,40 @@ public class CSV {
             else
                 stringBuilder.append("\n");
         }
+        BufferedReader reader = new BufferedReader(new FileReader("csv/base_package.csv"));
+        reader.readLine();      //skip first line
+        String line;
         int count = 0;
-        ArrayList<String> lines;
-        do {
-            int from = Configuration.maxPackagesInBox * count;
-            int to = from + Configuration.maxPackagesInBox - 1;
-            lines = readFromCSV("csv/base_package.csv", from, to);      //TODO evtl alle 24.000 zeilen lesen?
-            if(lines.size() == 0) break;
-            stringBuilder.append(Box.generateId()).append(",");
-            for (String line : lines) {
-                stringBuilder.append(line.split(",")[0]).append(",");   //append package_id
+        while ((line = reader.readLine()) != null) {
+            if(count == 0)
+                stringBuilder.append(Box.generateId()).append(",");
+            stringBuilder.append(line.split(",")[0]);
+            if (++count < Configuration.maxPackagesInBox)
+                stringBuilder.append(",");
+            else {
+                stringBuilder.append("\n");
+                count = 0;
             }
-            stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length()); //delete last ","
-            stringBuilder.append("\n");
-            count++;
-        } while(lines.size() != 0);
-        writeInCSV("base_box.csv", stringBuilder.toString());   // header
+        }
+        reader.close();
+        writeInCSV("base_box.csv", stringBuilder.toString());
         System.out.println("\t\t[Done]");
     }
     public static void initPallets() throws IOException{
         System.out.print("Initializing Pallets...");
-        writeInCSV("base_pallet.csv", "pallet_id,position,level,box_id\n");
-        ArrayList<String> boxes = readFromCSV("csv/base_box.csv");
-        StringBuilder pallets = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("pallet_id,position,level,box_id\n");
+
+        BufferedReader reader = new BufferedReader(new FileReader("csv/base_box.csv"));
+        reader.readLine();      //skip first line
+        String line;
         int id = 1, pos = 0, level = 0;
-        for (String box : boxes) {
+        while ((line = reader.readLine()) != null){
             String pallet = id + "," +
                     pos + "," +
                     level + "," +
-                    box.split(",")[0] + "\n";
-            pallets.append(pallet);
+                    line.split(",")[0] + "\n";
+            stringBuilder.append(pallet);
             if (++pos >= Configuration.amountPositionsOnPallet) {
                 pos = 0;
                 if (++level >= Configuration.amountLevelsOnPallet) {
@@ -219,7 +232,7 @@ public class CSV {
                 }
             }
         }
-        writeInCSV("base_pallet.csv", pallets.toString());
+        writeInCSV("base_pallet.csv", stringBuilder.toString());
         System.out.println("\t\t[Done]");
     }
     public static void initTrucks() throws IOException{
