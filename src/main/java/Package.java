@@ -7,11 +7,11 @@ public class Package {
 
     private char[] idCharPool, contentCharPool;
 
-    public Package(){
+    public Package(boolean explosive){
         idCharPool = Tools.connectCharPool(Tools.generateCharPool('a', 'z'), Tools.generateCharPool('0', '9'));
         this.id = generateId();
         contentCharPool = Tools.appendCharPool(Tools.appendCharPool(Tools.appendCharPool(Tools.generateCharPool('a', 'z'), ':'), '-'), '!');
-        content = generateContent();
+        content = generateContent(explosive);
         zip_code = generateZipCode();
         type = generateType();
         weight = 1 + Math.random() * 4;
@@ -38,12 +38,20 @@ public class Package {
         //TODO check if already used
         return new String(charId);
     }
-    private char[][][] generateContent(){
+    private char[][][] generateContent(boolean explosive){
         char[][][] content = new char[Configuration.l][Configuration.w][Configuration.h];
         for(int i = 0; i < Configuration.l; i++)
             for(int j = 0; j < Configuration.w; j++)
                 for(int k = 0; k < Configuration.h; k++)
                     content[i][j][k] = contentCharPool[(int) (Math.random() * contentCharPool.length)];
+        if(explosive) {
+            char[] explosiveContent = "exp!os:ve".toCharArray();
+            int l = (int) (Math.random() * (Configuration.l - explosiveContent.length)),
+                w = (int) (Math.random() * Configuration.w),
+                h = (int) (Math.random() * Configuration.h);
+            for (int i = 0; i < explosiveContent.length; i++)
+                content[l + i][w][h] = explosiveContent[i];
+        }
         return content;
     }
     private String generateZipCode(){

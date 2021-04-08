@@ -144,17 +144,33 @@ public class CSV {
 
     public static void initPackages() throws IOException{
         System.out.print("Initializing Packages...");
+        int[] e = new int[Configuration.amountExplosives];
+        for(int i = 0; i < e.length; i++){
+            e[i] = (int) (Math.random() * amountPackages);
+            for(int j = 0; j < i; j++)
+                if (e[i] == e[j]) {
+                    i = -1;
+                    break;
+                }
+        }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,content,zip_code,type,weigth\n");
         int count = 0;
         while (count < amountPackages) {
-            Package p = new Package();
+            boolean explosive = false;
+            for (int value : e) {
+                if (count == value) {
+                    explosive = true;
+                    break;
+                }
+            }
+            Package p = new Package(explosive);
             stringBuilder.append(p.getId()).append(",");
             char[][][] content = p.getContent();
-            for (int i = 0; i < Configuration.l; i++)
+            for (int i = 0; i < Configuration.h; i++)
                 for (int j = 0; j < Configuration.w; j++)
-                    for (int k = 0; k < Configuration.h; k++)
-                        stringBuilder.append(content[i][j][k]);
+                    for (int k = 0; k < Configuration.l; k++)
+                        stringBuilder.append(content[k][j][i]);
             stringBuilder.append(",").append(p.getZip_code()).append(",")
                     .append(p.getType()).append(",")
                     .append(p.getWeight()).append("\n");
