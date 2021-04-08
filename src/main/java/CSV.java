@@ -75,22 +75,6 @@ public class CSV {
         bw.close();
     }
 
-    /*public static Package[] readPackageFromCSV(){
-        packageList = readFromCSV("csv/base_package.csv");
-        Package[] packages = new Package[packageList.size()];
-        for(int i = 0; i < packages.length; i++)
-            packages[i] = new Package(packageList.get(i));
-        return packages;
-    }
-    public static Box[] readBoxFromCSV() throws IOException{
-        ArrayList<String> csv = readFromCSV("csv/base_box.csv");
-        Box[] boxes = new Box[csv.size()];
-        for(int i = 0; i < boxes.length; i++)
-            boxes[i] = new Box(csv.get(i));
-        return boxes;
-    }
-*/  // evtl überflüssig, weil nicht 24k Pakete gleichzeitig geladen werden können
-
     private static ArrayList<String> readFromCSV(String fileName) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -162,8 +146,8 @@ public class CSV {
         System.out.print("Initializing Packages...");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,content,zip_code,type,weigth\n");
-        int count = amountPackages;
-        while (count > 0) {
+        int count = 0;
+        while (count < amountPackages) {
             Package p = new Package();
             stringBuilder.append(p.getId()).append(",");
             char[][][] content = p.getContent();
@@ -174,9 +158,13 @@ public class CSV {
             stringBuilder.append(",").append(p.getZip_code()).append(",")
                     .append(p.getType()).append(",")
                     .append(p.getWeight()).append("\n");
-            count--;
+            if(++count % 1000 == 0) {
+                writeInCSV("base_package.csv", stringBuilder.toString());
+                stringBuilder = new StringBuilder();
+            }
         }
-        writeInCSV("base_package.csv", stringBuilder.toString());
+        if(stringBuilder.length() != 0)
+            writeInCSV("base_package.csv", stringBuilder.toString());
         System.out.println("\t[Done]");
     }
     public static void initBoxes() throws IOException{
