@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 public class CSV {
 
-    private static final int amountPackages = 24000;
     private static ArrayList<String> packageList, boxList, palletList, trailerList;
 
     public static void writePackageCSV(Package p) throws IOException {
@@ -146,7 +145,7 @@ public class CSV {
         System.out.print("Initializing Packages...");
         int[] e = new int[Configuration.amountExplosives];
         for(int i = 0; i < e.length; i++){
-            e[i] = (int) (Math.random() * amountPackages);
+            e[i] = (int) (Math.random() * Configuration.amountPackages);
             for(int j = 0; j < i; j++)
                 if (e[i] == e[j]) {
                     i = -1;
@@ -156,7 +155,7 @@ public class CSV {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,content,zip_code,type,weigth\n");
         int count = 0;
-        while (count < amountPackages) {
+        while (count < Configuration.amountPackages) {
             boolean explosive = false;
             for (int value : e) {
                 if (count == value) {
