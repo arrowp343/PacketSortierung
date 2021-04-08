@@ -1,9 +1,9 @@
 package roles.idCard;
 
 public class IDCardStatus_Locked implements IIDCardStatus{
-    int wrongTries = 0;
+    private int wrongTries = 0;
     public boolean readCard(IDCard idCard, String code){
-        if(!idCard.checkSuperPin(code)) {
+        if(!idCard.getMagnetStripe().checkSuperPin(code)) {
             wrongTries++;
             if (wrongTries >= 2)
                 idCard.setStatus(new IDCardStatus_Invalid());
