@@ -3,14 +3,18 @@ package roles.idCard;
 import roles.idCard.Encryption.MagnetStripe;
 
 public class IDCard {
-    private MagnetStripe magnetStripe;
+    private final MagnetStripe magnetStripe;
     private IIDCardStatus status;
+    private static int autoIncId = 0;
 
-    public IDCard(){
+    public IDCard(String name, String role, String pin, String superPin){
         status = new IDCardStatus_Active();
-        // TODO new magnetstripe
+        magnetStripe = new MagnetStripe(autoIncId++, name, role, pin, superPin);
     }
 
+    public boolean read(String pin){
+        return status.readCard(this, pin);
+    }
     public MagnetStripe getMagnetStripe() {
         return magnetStripe;
     }

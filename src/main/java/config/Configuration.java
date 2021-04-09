@@ -13,4 +13,6 @@ public class Configuration {
     public static final EncryptionStrategy encryptionStrategy = EncryptionStrategy.AES;
     public static final String encryptionKey = "dhbw";
 
+    public static final int amountTruckZones = 7;
+    public static final int amountAutonomousCarsInParkingLot = 5;
 }
