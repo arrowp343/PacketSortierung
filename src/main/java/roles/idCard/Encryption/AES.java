@@ -1,12 +1,49 @@
 package roles.idCard.Encryption;
 
-import javax.crypto.SecretKey;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
 
 public class AES implements IEncryptionStrategy{
-    public String encrypt(String plain, SecretKey key){
-        return null;    //TODO
+    SecretKeySpec secretKey;
+    byte[] key;
+
+
+    public String encrypt(String plainMessage, String key){
+        try {
+            setKey(key);
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return Base64.getEncoder().encodeToString(cipher.doFinal(plainMessage.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
-    public String decrypt(String cipher, SecretKey key){
-        return null;    //TODO
+    public String decrypt(String encryptedMessage, String key){
+        try {
+            setKey(key);
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedMessage)));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+    public void setKey(String inputKey) {
+        MessageDigest sha;
+        try {
+            key = inputKey.getBytes(StandardCharsets.UTF_8);
+            sha = MessageDigest.getInstance("SHA-1");
+            key = sha.digest(key);
+            key = Arrays.copyOf(key, 16);
+            secretKey = new SecretKeySpec(key, "AES");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
