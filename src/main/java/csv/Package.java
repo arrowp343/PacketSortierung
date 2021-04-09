@@ -1,3 +1,7 @@
+package csv;
+
+import config.Configuration;
+
 public class Package {
     private final String id;
     private final char[][][] content;

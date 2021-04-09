@@ -1,2 +1,2 @@
-Box: package -> packages
-Pallet: box -> boxes
+csv.Box: package -> packages
+csv.Pallet: box -> boxes

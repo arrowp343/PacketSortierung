@@ -1,3 +1,7 @@
+package csv;
+
+import config.Configuration;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -126,11 +130,11 @@ public class CSV {
             for (String line : lines)
                 if (line.split(",")[0].equals(id))
                     return line;
-        throw new Exception("readFromCSVbyId: id " + id + " not found in CSV");
+        throw new Exception("readFromCSVbyId: id " + id + " not found in csv.CSV");
     }
 
     public static void reset(){
-        System.out.println("-- CSV Reset --");
+        System.out.println("-- csv.CSV Reset --");
         File folder = new File("csv");
         File[] files = folder.listFiles();
         if(files!=null) { //some JVMs return null for empty dirs
@@ -273,7 +277,7 @@ public class CSV {
             initPallets();
             initTrucks();
         } catch (Exception e){
-            System.out.println("\t[Error] at CSV.main: \n" + e.getMessage());
+            System.out.println("\t[Error] at csv.CSV.main: \n" + e.getMessage());
         }
     }
 }
