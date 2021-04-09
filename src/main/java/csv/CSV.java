@@ -1,5 +1,7 @@
 package csv;
 
+import config.Configuration;
+
 import java.io.*;
 import java.util.ArrayList;
 

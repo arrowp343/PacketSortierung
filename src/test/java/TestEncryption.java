@@ -35,4 +35,13 @@ public class TestEncryption {
             System.out.println(e.getMessage());
         }
     }
+    @Test
+    public void testMagnetStripe(){
+        String pin = "1234", superPin = "123456";
+        MagnetStripe ms = new MagnetStripe(1, "Hans", "idk", pin, superPin);
+        assertTrue(ms.checkPin(pin));
+        assertTrue(ms.checkSuperPin(superPin));
+        assertFalse(ms.checkPin("0000"));
+        assertFalse(ms.checkSuperPin("000000"));
+    }
 }

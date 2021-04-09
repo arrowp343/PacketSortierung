@@ -11,7 +11,6 @@ public class AES implements IEncryptionStrategy{
     SecretKeySpec secretKey;
     byte[] key;
 
-
     public String encrypt(String plainMessage, String key){
         try {
             setKey(key);
