@@ -30,7 +30,9 @@ public class SortingTrack {
     public void scan() {
         Package aPackage;
         while ((aPackage = takeFromTrack()) != null) {
-            scanner.scan(aPackage, sortingMachine.getSortingAlgorithm());
+            if (scanner.scan(aPackage, sortingMachine.getSortingAlgorithm())) {
+                sortingMachine.logExplosive();
+            }
         }
     }
 

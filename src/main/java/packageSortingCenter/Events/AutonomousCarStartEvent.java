@@ -1,4 +1,4 @@
-package packageSortingCenter.CentralContol;
+package packageSortingCenter.Events;
 
 import packageSortingCenter.AutonomousCar.AutonomousCar;
 import packageSortingCenter.TruckZone.TruckZone;

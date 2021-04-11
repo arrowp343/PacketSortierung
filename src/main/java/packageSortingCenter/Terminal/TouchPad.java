@@ -1,6 +1,6 @@
 package packageSortingCenter.Terminal;
 
-import packageSortingCenter.CentralContol.Commands.ICommand;
+import packageSortingCenter.Commands.ICommand;
 
 public class TouchPad {
     Terminal terminal;

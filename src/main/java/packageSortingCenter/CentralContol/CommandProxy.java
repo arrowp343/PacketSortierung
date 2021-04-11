@@ -1,6 +1,6 @@
 package packageSortingCenter.CentralContol;
 
-import packageSortingCenter.CentralContol.Commands.ICommand;
+import packageSortingCenter.Commands.ICommand;
 import roles.Administrator;
 import roles.Employee;
 import roles.Operator;

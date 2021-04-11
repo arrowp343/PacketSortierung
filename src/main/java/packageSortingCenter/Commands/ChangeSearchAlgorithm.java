@@ -1,14 +1,14 @@
-package packageSortingCenter.CentralContol.Commands;
+package packageSortingCenter.Commands;
 
-public class Shutdown implements ICommand {
-    CommandType commandType = CommandType.shutdown;
+public class ChangeSearchAlgorithm implements ICommand {
+    CommandType commandType = CommandType.change_search_algorithm;
     String[] params;
 
-    public Shutdown() {
+    public ChangeSearchAlgorithm() {
         this(null);
     }
 
-    public Shutdown(String[] params) {
+    public ChangeSearchAlgorithm(String[] params) {
         this.params = params;
     }
 

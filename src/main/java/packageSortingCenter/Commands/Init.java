@@ -1,14 +1,14 @@
-package packageSortingCenter.CentralContol.Commands;
+package packageSortingCenter.Commands;
 
-public class Lock implements ICommand {
-    CommandType commandType = CommandType.lock;
+public class Init implements ICommand {
+    CommandType commandType = CommandType.init;
     String[] params;
 
-    public Lock() {
+    public Init() {
         this(null);
     }
 
-    public Lock(String[] params) {
+    public Init(String[] params) {
         this.params = params;
     }
 
@@ -19,6 +19,6 @@ public class Lock implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return null;
+        return params;
     }
 }

@@ -22,20 +22,21 @@ public class CSV {
                 .append(p.getWeight()).append("\n");
         writeInCSV("base_package.csv", stringBuilder.toString());
     }
-    public static void writeBoxCSV(Box[] boxes) throws IOException{
+
+    public static void writeBoxCSV(Box[] boxes) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("box_id,");
-        for(int i = 0; i < Configuration.maxPackagesInBox; i++){
+        for (int i = 0; i < Configuration.maxPackagesInBox; i++) {
             stringBuilder.append("p_id").append(i);
-            if(i != Configuration.maxPackagesInBox - 1)
+            if (i != Configuration.maxPackagesInBox - 1)
                 stringBuilder.append(",");
             else
                 stringBuilder.append("\n");
         }
-        for(Box b: boxes){
+        for (Box b : boxes) {
             stringBuilder.append(b.getId()).append(",");
             Package[] p = b.getPackages();
-            for(int i = 0; i < p.length; i++) {
+            for (int i = 0; i < p.length; i++) {
                 stringBuilder.append(p[i].getId());
                 if (i != Configuration.maxPackagesInBox - 1)
                     stringBuilder.append(",");
@@ -45,7 +46,8 @@ public class CSV {
         }
         writeInCSV("base_box.csv", stringBuilder.toString());
     }
-    public static void writePalletCSV(Pallet[] pallets) throws IOException{
+
+    public static void writePalletCSV(Pallet[] pallets) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("pallet_id,position,level,box_id\n");
         for (Pallet pallet : pallets) {            //for each pallet
@@ -65,6 +67,7 @@ public class CSV {
         }
         writeInCSV("base_pallet.csv", stringBuilder.toString());
     }
+
     private static void writeInCSV(String fileName, String line) throws IOException {
         String directoryName = "csv";
         File directory = new File(directoryName);
@@ -78,7 +81,7 @@ public class CSV {
         bw.close();
     }
 
-    private static ArrayList<String> readFromCSV(String fileName) throws IOException {
+    public static ArrayList<String> readFromCSV(String fileName) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         reader.readLine();      //skip first line
@@ -89,29 +92,31 @@ public class CSV {
 
         return lines;
     }
-    public static ArrayList<String> readFromCSV(String fileName, int from, int to) throws IOException{
+
+    public static ArrayList<String> readFromCSV(String fileName, int from, int to) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         reader.readLine();      //skip first line
-        for(int i = 0; i < from; i++)
+        for (int i = 0; i < from; i++)
             reader.readLine(); //skip lines from 0 to start
         String line;
-        for(int i = 0; i <= to-from; i++)
-            if((line = reader.readLine()) != null)
+        for (int i = 0; i <= to - from; i++)
+            if ((line = reader.readLine()) != null)
                 lines.add(line);
         reader.close();
         return lines;
     }
-    public static ArrayList<String> readNth1000FromCSV(String fileName, int n){
+
+    public static ArrayList<String> readNth1000FromCSV(String fileName, int n) {
         ArrayList<String> lines = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             reader.readLine();      //skip first line
-            for(int i = 0; i < 1000 * (n+1); i++)
+            for (int i = 0; i < 1000 * (n + 1); i++)
                 reader.readLine();      //skip first 1000 * (n+1) lines
             String line;
-            for(int i = 0; i < 1000; i++)
-                if((line = reader.readLine()) != null)
+            for (int i = 0; i < 1000; i++)
+                if ((line = reader.readLine()) != null)
                     lines.add(line);
             reader.close();
         } catch (Exception e) {
@@ -119,51 +124,62 @@ public class CSV {
         }
         return lines;
     }
-    public static String readFromCSVById(String obj, String id) throws Exception{        // TODO evtl andere lösung als string zu übergeben
+
+    public static String[] readFromCSVById(String obj, String id) throws Exception {        // TODO evtl andere lösung als string zu übergeben
         String filePath = "csv/base_" + obj + ".csv";
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         reader.readLine();      //skip first line
         String line;
+        ArrayList<String> lines = new ArrayList<>();
         while ((line = reader.readLine()) != null)
-                if (line.split(",")[0].equals(id))
-                    return line;
-        throw new Exception("readFromCSVbyId: id " + id + " not found in csv.CSV");
-    }
-    public static boolean checkIfIdAlreadyUsed(String obj, String id){
-        try{
-        String filePath = "csv/base_" + obj + ".csv";
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        reader.readLine();      //skip first line
-        String line;
-        while ((line = reader.readLine()) != null)
-            if (line.split(",")[0].equals(id)){
-                reader.close();
-                return true;
+            if (line.split(",")[0].equals(id))
+                lines.add(line);
+        if (lines.isEmpty())
+            throw new Exception("readFromCSVbyId: id " + id + " not found in csv.CSV");
+        else {
+            String[] outputStrings = new String[lines.size()];
+            for (int i = 0; i < lines.size(); i++) {
+                outputStrings[i] = lines.get(i);
             }
-        } catch (Exception e){
+            return outputStrings;
+        }
+    }
+
+    public static boolean checkIfIdAlreadyUsed(String obj, String id) {
+        try {
+            String filePath = "csv/base_" + obj + ".csv";
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            reader.readLine();      //skip first line
+            String line;
+            while ((line = reader.readLine()) != null)
+                if (line.split(",")[0].equals(id)) {
+                    reader.close();
+                    return true;
+                }
+        } catch (Exception e) {
             return false;
         }
         return false;
     }
 
-    public static void reset(){
+    public static void reset() {
         System.out.println("-- csv.CSV Reset --");
         File folder = new File("csv");
         File[] files = folder.listFiles();
-        if(files!=null) { //some JVMs return null for empty dirs
-            for(File f: files) {
+        if (files != null) { //some JVMs return null for empty dirs
+            for (File f : files) {
                 f.delete();
             }
         }
         folder.delete();
     }
 
-    public static void initPackages() throws IOException{
+    public static void initPackages() throws IOException {
         System.out.print("Initializing Packages...");
         int[] e = new int[Configuration.amountExplosives];
-        for(int i = 0; i < e.length; i++){
+        for (int i = 0; i < e.length; i++) {
             e[i] = (int) (Math.random() * Configuration.amountPackages);
-            for(int j = 0; j < i; j++)
+            for (int j = 0; j < i; j++)
                 if (e[i] == e[j]) {
                     i = -1;
                     break;
@@ -190,22 +206,23 @@ public class CSV {
             stringBuilder.append(",").append(p.getZip_code()).append(",")
                     .append(p.getType()).append(",")
                     .append(p.getWeight()).append("\n");
-            if(++count % 1000 == 0) {
+            if (++count % 1000 == 0) {
                 writeInCSV("base_package.csv", stringBuilder.toString());
                 stringBuilder = new StringBuilder();
             }
         }
-        if(stringBuilder.length() != 0)
+        if (stringBuilder.length() != 0)
             writeInCSV("base_package.csv", stringBuilder.toString());
         System.out.println("\t[Done]");
     }
-    public static void initBoxes() throws IOException{
+
+    public static void initBoxes() throws IOException {
         System.out.print("Initializing Boxes...");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("box_id,");
-        for(int i = 0; i < Configuration.maxPackagesInBox; i++){
+        for (int i = 0; i < Configuration.maxPackagesInBox; i++) {
             stringBuilder.append("p_id").append(i);
-            if(i != Configuration.maxPackagesInBox - 1)
+            if (i != Configuration.maxPackagesInBox - 1)
                 stringBuilder.append(",");
             else
                 stringBuilder.append("\n");
@@ -215,7 +232,7 @@ public class CSV {
         String line;
         int count = 0;
         while ((line = reader.readLine()) != null) {
-            if(count == 0)
+            if (count == 0)
                 stringBuilder.append(Box.generateId()).append(",");
             stringBuilder.append(line.split(",")[0]);
             if (++count < Configuration.maxPackagesInBox)
@@ -229,7 +246,8 @@ public class CSV {
         writeInCSV("base_box.csv", stringBuilder.toString());
         System.out.println("\t\t[Done]");
     }
-    public static void initPallets() throws IOException{
+
+    public static void initPallets() throws IOException {
         System.out.print("Initializing Pallets...");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("pallet_id,position,level,box_id\n");
@@ -238,7 +256,7 @@ public class CSV {
         reader.readLine();      //skip first line
         String line;
         int id = 1, pos = 0, level = 0;
-        while ((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             String pallet = id + "," +
                     pos + "," +
                     level + "," +
@@ -255,7 +273,8 @@ public class CSV {
         writeInCSV("base_pallet.csv", stringBuilder.toString());
         System.out.println("\t\t[Done]");
     }
-    public static void initTrucks() throws IOException{
+
+    public static void initTrucks() throws IOException {
         System.out.print("Initializing Trucks...");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("truck_id,side,position,pallet_id\n");
@@ -264,14 +283,14 @@ public class CSV {
         reader.readLine();      //skip first line
         String line, truck_id = Truck.generateId(), pallet_id = "";
         int pos = 0;
-        while ((line = reader.readLine()) != null){
-            if(pallet_id.equals(line.split(",")[0])) continue;
+        while ((line = reader.readLine()) != null) {
+            if (pallet_id.equals(line.split(",")[0])) continue;
             else pallet_id = line.split(",")[0];
             stringBuilder.append(truck_id).append(",")
-                         .append(pos%2==0 ? "left" : "right").append(",")
-                         .append(pos / 2).append(",")
-                         .append(pallet_id).append("\n");
-            if(++pos >= Configuration.maxPalletsInTruck){
+                    .append(pos % 2 == 0 ? "left" : "right").append(",")
+                    .append(pos / 2).append(",")
+                    .append(pallet_id).append("\n");
+            if (++pos >= Configuration.maxPalletsInTruck) {
                 pos = 0;
                 truck_id = Truck.generateId();
             }
@@ -289,7 +308,7 @@ public class CSV {
             initBoxes();
             initPallets();
             initTrucks();
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("\t[Error] at csv.CSV.main: \n" + e.getMessage());
         }
     }

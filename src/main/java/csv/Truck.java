@@ -1,17 +1,46 @@
 package csv;
 
+import config.Configuration;
+
+import java.util.ArrayList;
+
 public class Truck {
     private final String id;
     private Trailer trailer;
 
-    public Truck(Trailer trailer){
+    public Truck(Trailer trailer) {
         id = generateId();
         this.trailer = trailer;
     }
 
-    /*public csv.Package(String csv){
-        TODO einlesen aus csv
-    }*/
+    public Truck(ArrayList<String> csv) {
+        String id = "";
+        trailer = new Trailer(this);
+        Pallet[] palletsRight = new Pallet[Configuration.maxPalletsInTruck / 2];
+        Pallet[] palletsLeft = new Pallet[Configuration.maxPalletsInTruck / 2];
+        for (String csvString : csv) {
+            String[] split = csvString.split(",");
+            id = split[0];
+            try {
+                Pallet pallet = new Pallet(split[3]);
+                String[] palletStrings = CSV.readFromCSVById("pallet", split[3]);
+                for (String palletString : palletStrings) {
+                    String[] palletSplit = palletString.split(",");
+                    Box box = new Box(CSV.readFromCSVById("box", palletSplit[3])[0]);
+                    pallet.addBox(box, Integer.parseInt(palletSplit[1]), Integer.parseInt(palletSplit[2]));
+                }
+                if (split[1].equals("right"))
+                    palletsRight[Integer.parseInt(split[2])] = pallet;
+                else
+                    palletsRight[Integer.parseInt(split[2])] = pallet;
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+        this.id = id;
+        trailer.setPalletsRight(palletsRight);
+        trailer.setPalletsLeft(palletsLeft);
+    }
 
     public static String generateId() {
         char[] charId = new char[4];
@@ -23,13 +52,15 @@ public class Truck {
         return new String(charId);
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
-    public Trailer getTrailer(){
+
+    public Trailer getTrailer() {
         return trailer;
     }
-    public void setTrailer(Trailer trailer){
+
+    public void setTrailer(Trailer trailer) {
         this.trailer = trailer;
     }
 }

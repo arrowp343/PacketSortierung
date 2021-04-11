@@ -1,14 +1,14 @@
-package packageSortingCenter.CentralContol.Commands;
+package packageSortingCenter.Commands;
 
-public class Next implements ICommand {
-    CommandType commandType = CommandType.next;
+public class Lock implements ICommand {
+    CommandType commandType = CommandType.lock;
     String[] params;
 
-    public Next() {
+    public Lock() {
         this(null);
     }
 
-    public Next(String[] params) {
+    public Lock(String[] params) {
         this.params = params;
     }
 
@@ -19,6 +19,6 @@ public class Next implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return params;
+        return null;
     }
 }

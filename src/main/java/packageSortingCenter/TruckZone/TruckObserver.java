@@ -1,6 +1,7 @@
 package packageSortingCenter.TruckZone;
 
 import packageSortingCenter.CentralContol.CentralControlUnit;
+import packageSortingCenter.Events.TruckDetectEvent;
 
 public class TruckObserver {
     private final CentralControlUnit centralControlUnit;

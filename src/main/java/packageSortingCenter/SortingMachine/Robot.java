@@ -5,6 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import csv.Box;
 import csv.Package;
 import csv.Pallet;
+import packageSortingCenter.Events.StartStoringEvent;
 
 public class Robot {
     private final EventBus eventBus;

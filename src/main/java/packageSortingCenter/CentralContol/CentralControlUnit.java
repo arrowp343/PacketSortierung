@@ -2,19 +2,18 @@ package packageSortingCenter.CentralContol;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import csv.CSV;
+import csv.Truck;
 import packageSortingCenter.AutonomousCar.AutonomousCar;
-import packageSortingCenter.AutonomousCar.UnloadingFinishedEvent;
-import packageSortingCenter.CentralContol.Commands.ICommand;
+import packageSortingCenter.Commands.ICommand;
+import packageSortingCenter.Events.*;
 import packageSortingCenter.PackageSortingCenter;
 import packageSortingCenter.SortingMachine.SearchingAlgorithm;
-import packageSortingCenter.SortingMachine.StartSortingEvent;
-import packageSortingCenter.SortingMachine.StartStoringEvent;
-import packageSortingCenter.SortingMachine.WareHouseTrackFullEvent;
 import packageSortingCenter.Terminal.Terminal;
-import packageSortingCenter.TruckZone.TruckDetectEvent;
 import packageSortingCenter.TruckZone.TruckZone;
 import packageSortingCenter.WaitingZone;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class CentralControlUnit {
@@ -75,8 +74,33 @@ public class CentralControlUnit {
         }
     }
 
+    @Subscribe
+    public void receive(LogEvent logEvent) {
+        switch (logEvent.getLogEventType()) {
+            case Package -> {
+                log.addPackage(logEvent.getPackageType());
+            }
+            case Explosive -> log.addExplosive();
+        }
+    }
+
     private void init() {
-        //TODO Truck from CSV
+        try {
+            ArrayList<String> truckStrings = CSV.readFromCSV("csv/base_truck.csv");
+            String truckID = null;
+            ArrayList<String> oneTruckStrings = new ArrayList<>();
+            for (String truckString : truckStrings) {
+                if (truckID != null && !truckID.equals(truckString.split(",")[0])) {
+                    waitingZone.park(new Truck(oneTruckStrings));
+                    oneTruckStrings.clear();
+                }
+                truckID = truckString.split(",")[0];
+                oneTruckStrings.add(truckString);
+
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     private void next() {
@@ -106,7 +130,7 @@ public class CentralControlUnit {
         }
     }
 
-    public Log getLog() {
-        return log;
+    public Terminal getTerminal() {
+        return terminal;
     }
 }

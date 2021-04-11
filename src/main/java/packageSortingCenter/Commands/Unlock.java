@@ -1,14 +1,14 @@
-package packageSortingCenter.CentralContol.Commands;
+package packageSortingCenter.Commands;
 
-public class Init implements ICommand {
-    CommandType commandType = CommandType.init;
+public class Unlock implements ICommand {
+    CommandType commandType = CommandType.unlock;
     String[] params;
 
-    public Init() {
+    public Unlock() {
         this(null);
     }
 
-    public Init(String[] params) {
+    public Unlock(String[] params) {
         this.params = params;
     }
 

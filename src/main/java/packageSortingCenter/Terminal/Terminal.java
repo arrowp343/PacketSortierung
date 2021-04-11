@@ -2,7 +2,7 @@ package packageSortingCenter.Terminal;
 
 import packageSortingCenter.CentralContol.CentralControlUnit;
 import packageSortingCenter.CentralContol.CommandProxy;
-import packageSortingCenter.CentralContol.Commands.ICommand;
+import packageSortingCenter.Commands.ICommand;
 import roles.Employee;
 
 public class Terminal { //TODO GUI?
@@ -21,6 +21,10 @@ public class Terminal { //TODO GUI?
 
     public void register(Employee employee, String pin) {
         if (idCardReader.read(employee.getIdCard(), pin)) this.employee = employee;
+    }
+
+    public void leave() {
+        employee = null;
     }
 
     public boolean sendCommand(ICommand command) {

@@ -1,14 +1,14 @@
-package packageSortingCenter.CentralContol.Commands;
+package packageSortingCenter.Commands;
 
-public class ShowStatistics implements ICommand {
-    CommandType commandType = CommandType.show_statistics;
+public class Next implements ICommand {
+    CommandType commandType = CommandType.next;
     String[] params;
 
-    public ShowStatistics() {
+    public Next() {
         this(null);
     }
 
-    public ShowStatistics(String[] params) {
+    public Next(String[] params) {
         this.params = params;
     }
 

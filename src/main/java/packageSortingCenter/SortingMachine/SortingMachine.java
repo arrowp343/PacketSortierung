@@ -6,6 +6,9 @@ import csv.Box;
 import csv.Package;
 import csv.PackageType;
 import csv.Pallet;
+import packageSortingCenter.Events.LogEvent;
+import packageSortingCenter.Events.LogEventType;
+import packageSortingCenter.Events.StartSortingEvent;
 
 import java.util.ArrayList;
 
@@ -48,7 +51,7 @@ public class SortingMachine {
 
     @Subscribe
     public void receive(StartSortingEvent startSortingEvent) {
-        sort();
+        if (isActive) sort();
     }
 
     private void sort() {
@@ -58,6 +61,7 @@ public class SortingMachine {
                 for (SortingTrack sortingTrack : sortingTracks) {
                     if (sortingTrack.getPackageType() == aPackage.getPackageType()) {
                         sortingTrack.setOnTrack(aPackage);
+                        eventBus.post(new LogEvent(LogEventType.Package, aPackage.getPackageType()));
                     }
                 }
             }
@@ -67,8 +71,16 @@ public class SortingMachine {
         }
     }
 
+    public void logExplosive() {
+        eventBus.post(new LogEvent(LogEventType.Explosive));
+    }
+
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public boolean getActive() {
+        return isActive;
     }
 
     public PalletArea getPalletArea() {

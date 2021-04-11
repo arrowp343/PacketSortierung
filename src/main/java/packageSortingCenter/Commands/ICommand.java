@@ -1,4 +1,4 @@
-package packageSortingCenter.CentralContol.Commands;
+package packageSortingCenter.Commands;
 
 public interface ICommand {
     CommandType getCommandType();

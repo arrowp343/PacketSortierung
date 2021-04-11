@@ -7,6 +7,11 @@ public abstract class Employee {
     String name;
     IDCard idCard;
 
+    public Employee(String name, String role, String pin, String superPin) {
+        idCard = new IDCard(name, role, pin, superPin);
+        this.name = name;
+    }
+
     public IDCard getIdCard() {
         return idCard;
     }

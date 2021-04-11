@@ -1,4 +1,6 @@
-package packageSortingCenter.TruckZone;
+package packageSortingCenter.Events;
+
+import packageSortingCenter.TruckZone.TruckZone;
 
 public class TruckDetectEvent {
     private final TruckZone truckZone;
