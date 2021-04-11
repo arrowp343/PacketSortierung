@@ -6,4 +6,8 @@ public abstract class Employee {
     int id;
     String name;
     IDCard idCard;
+
+    public IDCard getIdCard() {
+        return idCard;
+    }
 }
