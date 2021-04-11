@@ -120,14 +120,11 @@ public class CSV {
         return lines;
     }
     public static String readFromCSVById(String obj, String id) throws Exception{        // TODO evtl andere lösung als string zu übergeben
-        ArrayList<String> lines = switch (obj) {
-            case "package" -> packageList;
-            case "box" -> boxList;
-            case "pallet" -> palletList;
-            default -> throw new Exception("readFromCSVbyId: Object " + obj + " not valid;");
-        };
-        if(lines != null)
-            for (String line : lines)
+        String filePath = "csv/base_" + obj + ".csv";
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        reader.readLine();      //skip first line
+        String line;
+        while ((line = reader.readLine()) != null)
                 if (line.split(",")[0].equals(id))
                     return line;
         throw new Exception("readFromCSVbyId: id " + id + " not found in csv.CSV");
