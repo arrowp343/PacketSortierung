@@ -39,7 +39,10 @@ public class Package {
         char[] charId = new char[6];
         for(int i = 0; i < charId.length; i++)
             charId[i] = idCharPool[(int) (Math.random() * idCharPool.length)];
-        //TODO check if already used
+        do {
+            for (int i = 0; i < charId.length; i++)
+                charId[i] = idCharPool[(int) (Math.random() * idCharPool.length)];
+        } while (CSV.checkIfIdAlreadyUsed("package", new String(charId)));
         return new String(charId);
     }
     private char[][][] generateContent(boolean explosive){

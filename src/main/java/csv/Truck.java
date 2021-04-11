@@ -16,9 +16,10 @@ public class Truck {
     public static String generateId() {
         char[] charId = new char[4];
         char[] idCharPool = Tools.connectCharPool(Tools.generateCharPool('a', 'z'), Tools.generateCharPool('0', '9'));
-        for (int i = 0; i < charId.length; i++)
-            charId[i] = idCharPool[(int) (Math.random() * idCharPool.length)];
-        //TODO check if already used
+        do {
+            for (int i = 0; i < charId.length; i++)
+                charId[i] = idCharPool[(int) (Math.random() * idCharPool.length)];
+        } while (CSV.checkIfIdAlreadyUsed("pallet", new String(charId)));
         return new String(charId);
     }
 

@@ -132,6 +132,22 @@ public class CSV {
                     return line;
         throw new Exception("readFromCSVbyId: id " + id + " not found in csv.CSV");
     }
+    public static boolean checkIfIdAlreadyUsed(String obj, String id){
+        try{
+        String filePath = "csv/base_" + obj + ".csv";
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        reader.readLine();      //skip first line
+        String line;
+        while ((line = reader.readLine()) != null)
+            if (line.split(",")[0].equals(id)){
+                reader.close();
+                return true;
+            }
+        } catch (Exception e){
+            return false;
+        }
+        return false;
+    }
 
     public static void reset(){
         System.out.println("-- csv.CSV Reset --");
